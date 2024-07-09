@@ -5,8 +5,6 @@ import type { NextFn } from '@adonisjs/core/types/http'
 
 export default class UserLocationMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
-    console.log("Middleware Called")
-    console.log(ctx)
     // if (request.url() == '/user-register') {
     //    const validateUser = await userRegisterValidate.validate(request.all());
     //    if (!validateUser) {

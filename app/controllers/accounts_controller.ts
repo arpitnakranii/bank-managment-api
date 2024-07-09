@@ -93,7 +93,6 @@ export default class AccountsController {
                 }
                 else {
                     query.balance -= Number(withdrawMoney.amount)
-                    console.log(query.balance)
                     await query.save();
                     let obj = {
                         id: query.id,
@@ -118,7 +117,6 @@ export default class AccountsController {
         try {
             let id = params.id;
             let { to, amount } = request.only(['to', 'amount']);
-            console.log(to);
             const findUer = await Account.findOrFail(id);
             if (findUer) {
                 if (findUer.balance < Number(amount)) {
@@ -170,8 +168,7 @@ export default class AccountsController {
 
     public async deleteAccount({ params, response }: HttpContext) {
         try {
-            let id = params.id; 
-            console.log(id)
+            let id = params.id;
             const query = await Account.findOrFail(id);
             if (query) {
                 await query.delete();

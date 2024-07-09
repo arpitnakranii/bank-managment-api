@@ -10,7 +10,6 @@ import hash from '@adonisjs/core/services/hash';
 export default class UsersController {
     public async creteUser({ request, response }: HttpContext) {
         try {
-            console.log("hello")
             const data = request.all();
             let user = new User();
             user.username = data.username;
@@ -66,10 +65,8 @@ export default class UsersController {
     public async getUser({ params, response }: HttpContext) {
         try {
             let data = params.id;
-            console.log(data);
 
             const query = await User.find(data);
-            console.log(query?.$attributes);
             const obj = {
                 id: query?.$attributes["id"],
                 name: query?.$attributes["username"],
@@ -89,7 +86,6 @@ export default class UsersController {
     public async deleteUser({ params, response }: HttpContext) {
         try {
             let id = params.id; 
-            console.log(id)
             const query = await User.findOrFail(id);
             if (query) {
                 await query.delete();
