@@ -2,6 +2,10 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user';
 import hash from '@adonisjs/core/services/hash';
 
+import { validateFile } from '#validators/user'
+import app from '@adonisjs/core/services/app';
+import { cuid } from '@adonisjs/core/helpers'
+
 //import jwt from 'jsonwebtoken'
 
 
@@ -11,6 +15,16 @@ export default class UsersController {
     public async creteUser({ request, response }: HttpContext) {
         try {
             const data = request.all();
+
+            //#region  fille upload
+            const validatefile = await request.validateUsing(validateFile);
+            const files = request.file('document');
+            console.log(files?.meta)
+            await files?.move(app.makePath('upload'),{
+                name:`${cuid()}.${files.extname}`
+            })
+            //#endregion
+            
             let user = new User();
             user.username = data.username;
             user.password = data.password;
@@ -29,7 +43,7 @@ export default class UsersController {
 
     }
 
-    public async loginUser({ request, response }: HttpContext) {
+    public async loginUser({ request, response, auth }: HttpContext) {
         try {
             const { email, password } = request.only(['email', 'password']);
 
@@ -38,9 +52,11 @@ export default class UsersController {
 
 
             if (query) {
+                const tocken = await User.accessTokens.create(query)
                 if (await hash.verify(query?.$attributes["password"], password)) {
                     return response.status(200).json({
-                        massage: 'Log in Successfully'
+                        massage: 'Log in Successfully',
+                        tocken: tocken
                     })
                 }
                 else {
@@ -85,7 +101,7 @@ export default class UsersController {
     }
     public async deleteUser({ params, response }: HttpContext) {
         try {
-            let id = params.id; 
+            let id = params.id;
             const query = await User.findOrFail(id);
             if (query) {
                 await query.delete();

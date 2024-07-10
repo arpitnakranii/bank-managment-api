@@ -16,3 +16,16 @@ export const userLoginValidate =vine.compile(
         password:vine.string().minLength(2)
     })
 )
+
+export const validateFile = vine.compile(
+    vine.object({
+        document:vine.array(
+            vine.file({
+                size:'2mb',
+                extnames:['png','jpg']
+            })
+        )
+            
+           
+    })
+)
